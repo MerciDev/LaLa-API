@@ -1,0 +1,18 @@
+[
+  {
+    "id": "halo-combat-evolved",
+    "name": "Halo: Combat Evolved",
+    "console": "Xbox",
+    "releaseDate": "2001-11-15",
+    "tags": [
+      "FPS",
+      "Sci-Fi",
+      "Shooter"
+    ],
+    "description": "The Master Chief fights the Covenant on a mysterious ring world.",
+    "images": {
+      "cover": "/images/optimized/h/halo-combat-evolved.webp",
+      "screenshots": []
+    }
+  }
+]

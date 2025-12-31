@@ -1,0 +1,118 @@
+[
+    {
+        "id": "nintendo-top-nes",
+        "name": "NES / Famicom"
+    },
+    {
+        "id": "nintendo-snes",
+        "name": "Super Nintendo / SNES"
+    },
+    {
+        "id": "nintendo-n64",
+        "name": "Nintendo 64"
+    },
+    {
+        "id": "nintendo-gamecube",
+        "name": "Nintendo GameCube"
+    },
+    {
+        "id": "nintendo-wii",
+        "name": "Wii"
+    },
+    {
+        "id": "nintendo-wiiu",
+        "name": "Wii U"
+    },
+    {
+        "id": "nintendo-switch",
+        "name": "Nintendo Switch"
+    },
+    {
+        "id": "nintendo-gb",
+        "name": "Game Boy"
+    },
+    {
+        "id": "nintendo-gbc",
+        "name": "Game Boy Color"
+    },
+    {
+        "id": "nintendo-gba",
+        "name": "Game Boy Advance"
+    },
+    {
+        "id": "nintendo-ds",
+        "name": "Nintendo DS"
+    },
+    {
+        "id": "nintendo-3ds",
+        "name": "Nintendo 3DS"
+    },
+    {
+        "id": "sony-ps1",
+        "name": "PlayStation"
+    },
+    {
+        "id": "sony-ps2",
+        "name": "PlayStation 2"
+    },
+    {
+        "id": "sony-ps3",
+        "name": "PlayStation 3"
+    },
+    {
+        "id": "sony-ps4",
+        "name": "PlayStation 4"
+    },
+    {
+        "id": "sony-ps5",
+        "name": "PlayStation 5"
+    },
+    {
+        "id": "sony-psp",
+        "name": "PlayStation Portable (PSP)"
+    },
+    {
+        "id": "sony-psvita",
+        "name": "PlayStation Vita"
+    },
+    {
+        "id": "microsoft-xbox",
+        "name": "Xbox"
+    },
+    {
+        "id": "microsoft-xbox360",
+        "name": "Xbox 360"
+    },
+    {
+        "id": "microsoft-xboxone",
+        "name": "Xbox One"
+    },
+    {
+        "id": "microsoft-xboxseries",
+        "name": "Xbox Series X|S"
+    },
+    {
+        "id": "sega-mastersystem",
+        "name": "Master System"
+    },
+    {
+        "id": "sega-genesis",
+        "name": "Sega Genesis / Mega Drive"
+    },
+    {
+        "id": "sega-saturn",
+        "name": "Sega Saturn"
+    },
+    {
+        "id": "sega-dreamcast",
+        "name": "Dreamcast"
+    },
+    {
+        "id": "pc-windows",
+        "name": "PC (Windows)"
+    },
+    {
+        "id": "other-arcade",
+        "name": "Arcade"
+    }
+]

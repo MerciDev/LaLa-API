@@ -1,0 +1,18 @@
+[
+  {
+    "id": "super-mario-64",
+    "name": "Super Mario 64",
+    "console": "N64",
+    "releaseDate": "1996-06-23",
+    "tags": [
+      "Platformer",
+      "3D",
+      "Mario"
+    ],
+    "description": "Mario explores Peach's castle and jumps into paintings.",
+    "images": {
+      "cover": "/images/optimized/s/super-mario-64.webp",
+      "screenshots": []
+    }
+  }
+]
