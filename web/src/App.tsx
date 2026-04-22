@@ -13,7 +13,8 @@ import {
   Edit3,
   Save,
   Copy,
-  Trash2
+  Trash2,
+  RefreshCw
 } from 'lucide-react';
 import { ImageInput } from './components/ImageInput';
 
@@ -44,7 +45,7 @@ interface Game {
   };
 }
 
-const API_URL = 'http://localhost:4000/api/games';
+const API_URL = 'http://localhost:3000/api/games';
 const ADMIN_TOKEN = 'secret_mega_secure_token_2025';
 
 function App() {
@@ -55,9 +56,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [hoveredGameId, setHoveredGameId] = useState<string | null>(null);
   const [consoles, setConsoles] = useState<{ id: string, name: string }[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/api/consoles').then(res => setConsoles(res.data)).catch(console.error);
+    axios.get('http://localhost:3000/api/consoles').then(res => setConsoles(res.data)).catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -67,12 +69,14 @@ function App() {
   const fetchGames = async () => {
     try {
       setLoading(true);
+      setError(null);
       const query = search || 'a';
       const res = await axios.get(`${API_URL}/search?q=${query}`);
       const results = Array.isArray(res.data.results) ? res.data.results : [];
       setGames(results);
     } catch (err) {
       console.error("Error fetching games:", err);
+      setError("No se pudo conectar con el servidor. Verifica que la API esté corriendo.");
     } finally {
       setLoading(false);
     }
@@ -195,9 +199,9 @@ function App() {
 
   // Función auxiliar para obtener la URL de la imagen
   const getImageUrl = (url?: string) => {
-    if (!url) return 'https://via.placeholder.com/300x400/1e293b/475569?text=No+Cover';
+    if (!url) return 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22300%22 height%3D%22400%22 viewBox%3D%220 0 300 400%22%3E%3Crect fill%3D%22%231e293b%22 width%3D%22300%22 height%3D%22400%22%2F%3E%3Ctext fill%3D%22%23475569%22 font-family%3D%22sans-serif%22 font-size%3D%2230%22 dy%3D%2210.5%22 font-weight%3D%22bold%22 x%3D%2250%25%22 y%3D%2250%25%22 text-anchor%3D%22middle%22%3ENo Cover%3C%2Ftext%3E%3C%2Fsvg%3E';
     if (url.startsWith('http')) return url;
-    return `http://localhost:4000${url}`;
+    return `http://localhost:3000${url}`;
   };
 
   const getConsoleName = (id?: string) => {
@@ -291,6 +295,20 @@ function App() {
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
           </div>
+        ) : error ? (
+          <div className="text-center py-20 bg-red-500/10 rounded-3xl border border-red-500/20">
+            <div className="mx-auto h-16 w-16 text-red-400 mb-4 bg-red-500/20 rounded-full flex items-center justify-center">
+              <Monitor size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-red-200 mb-2">Error de Conexión</h3>
+            <p className="text-red-300/70 text-lg mb-6 max-w-md mx-auto">{error}</p>
+            <button
+              onClick={() => fetchGames()}
+              className="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-xl font-semibold transition-all cursor-pointer flex items-center gap-2 mx-auto"
+            >
+              <RefreshCw size={18} /> Reintentar
+            </button>
+          </div>
         ) : games.length === 0 ? (
           <div className="text-center py-20 bg-slate-800/30 rounded-3xl border border-white/5 border-dashed">
             <Trophy className="mx-auto h-16 w-16 text-slate-600 mb-4" />
@@ -316,7 +334,7 @@ function App() {
                     alt={game.name}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x400/1e293b/475569?text=Error'; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22300%22 height%3D%22400%22 viewBox%3D%220 0 300 400%22%3E%3Crect fill%3D%22%231e293b%22 width%3D%22300%22 height%3D%22400%22%2F%3E%3Ctext fill%3D%22%23475569%22 font-family%3D%22sans-serif%22 font-size%3D%2230%22 dy%3D%2210.5%22 font-weight%3D%22bold%22 x%3D%2250%25%22 y%3D%2250%25%22 text-anchor%3D%22middle%22%3EError%3C%2Ftext%3E%3C%2Fsvg%3E'; }}
                   />
 
                   {/* Overlay Gradient on Hover */}
@@ -376,7 +394,7 @@ function App() {
                     src={getImageUrl(selectedGame.images?.cover)}
                     className="w-full h-full object-cover"
                     alt="Preview"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x400/1e293b/475569?text=Preview'; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22300%22 height%3D%22400%22 viewBox%3D%220 0 300 400%22%3E%3Crect fill%3D%22%231e293b%22 width%3D%22300%22 height%3D%22400%22%2F%3E%3Ctext fill%3D%22%23475569%22 font-family%3D%22sans-serif%22 font-size%3D%2230%22 dy%3D%2210.5%22 font-weight%3D%22bold%22 x%3D%2250%25%22 y%3D%2250%25%22 text-anchor%3D%22middle%22%3EPreview%3C%2Ftext%3E%3C%2Fsvg%3E'; }}
                   />
                   {/* Reflection effect */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-50 pointer-events-none" />

@@ -7,7 +7,9 @@ import axios from 'axios';
 const PUBLIC_DIR = path.join(__dirname, '../../public');
 const IMAGES_DIR = path.join(PUBLIC_DIR, 'images/optimized');
 const TARGET_WIDTH = 600;
-const QUALITY = 80;
+const THUMB_WIDTH = 250;
+const QUALITY = 85; 
+const THUMB_QUALITY = 70;
 
 export const optimizeAndSaveImage = async (
     input: Buffer | string,
@@ -52,18 +54,22 @@ export const optimizeAndSaveImage = async (
             throw new Error('Invalid input type');
         }
 
-        // 3. Process
-        // Handling special resize rules could go here (e.g. logos might not need resizing or need containment)
-        // For now, consistent resize for covers/backgrounds.
-        // Maybe skip resize for logos if we want original resolution? 
-        // Let's stick to the script's logic: resize to TARGET_WIDTH
+        const thumbFilename = `${safeId}-${safeType}-thumb.webp`;
+        const thumbOutputPath = path.join(subDir, thumbFilename);
 
+        // 3. Process Full Version
         await sharp(inputBuffer)
             .resize({ width: TARGET_WIDTH, withoutEnlargement: true })
             .webp({ quality: QUALITY })
             .toFile(outputPath);
 
-        return publicPath;
+        // 4. Process Thumbnail Version
+        await sharp(inputBuffer)
+            .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
+            .webp({ quality: THUMB_QUALITY })
+            .toFile(thumbOutputPath);
+
+        return publicPath; // We still return the main path, but the -thumb version now exists on disk.
     } catch (error) {
         console.error("Image optimization error:", error);
         throw error;

@@ -49,6 +49,7 @@
     "description": "The Legend of Zelda: Twilight Princess is the last Zelda game for GameCube, it was highly anticipated by many members of the gaming community and was regarded as finally fulfilling the dreams of those who wanted a much more realistic and mature game than the ones before. The art is similar to the naturalistic style of Ocarina of Time, rather than the cel-shaded look of The Wind Waker. The main adventure takes place in several provinces with dungeons and temples. New to this game is the ability for Link to transform into a Wolf when entering the Twilight. As a wolf, Link can use his senses to solve puzzles and get past obstacles, he can also dig holes to find hearts and rupees. Twilight Princess has received universal acclaim from reviewers and journalists, who cited it as the greatest Zelda game of all time.",
     "images": {
       "cover": "/images/optimized/z/zelda-twilight-princess-gc-cover.webp",
+      "background": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920",
       "screenshots": []
     },
     "platforms": [
@@ -59,6 +60,30 @@
       {
         "console": "nintendo-wii",
         "date": "2006-11-19"
+      }
+    ]
+  },
+  {
+    "id": "zelda-twilight-princess-hd",
+    "name": "The Legend of Zelda: Twilight Princess HD",
+    "console": "nintendo-wiiu",
+    "releaseDate": "2016-06-24",
+    "tags": [
+      "Adventure",
+      "Action",
+      "Puzzle"
+    ],
+    "description": "The Legend of Zelda: Twilight Princess HD is a port of the original The Legend of Zelda: Twilight Princess for Wii U. The game features a new 3D engine and improved graphics, as well as new features such as the ability to play online with friends. The game also features a new story mode and a new campaign mode, as well as a new campaign mode and a new campaign mode. The game also features a new campaign mode and a new campaign mode.",
+    "images": {
+      "cover": "/images/optimized/z/zelda-twilight-princess-hd-cover.webp",
+      "square": "/images/optimized/z/zelda-twilight-princess-hd-square.webp",
+      "background": "/images/optimized/z/zelda-twilight-princess-hd-background.webp",
+      "screenshots": []
+    },
+    "platforms": [
+      {
+        "console": "nintendo-wiiu",
+        "date": "2016-06-24"
       }
     ]
   },
@@ -75,6 +100,7 @@
     "description": "Link travels through time to stop Ganondorf.",
     "images": {
       "cover": "/images/optimized/z/zelda-ocarina-of-time.webp",
+      "background": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1920",
       "screenshots": []
     }
   },

@@ -95,25 +95,46 @@ const main = async () => {
 
         let fileChanged = false;
 
+        const imageKeys = ['cover', 'background', 'square', 'vertical', 'horizontal', 'logo', 'icon'];
+        
         for (const game of games) {
-            if (game.images?.cover) {
-                const letter = game.id.charAt(0).toLowerCase(); // z
-                const expectedFilename = `${game.id}-cover`;
+            if (!game.images) continue;
+
+            for (const type of imageKeys) {
+                // @ts-ignore
+                const currentUrl = game.images[type];
+                if (!currentUrl) continue;
+
+                const letter = game.id.charAt(0).toLowerCase();
+                const expectedFilename = `${game.id}-${type}`;
                 const expectedPath = `/images/optimized/${letter}/${expectedFilename}.webp`;
 
-                // Check logic: URL or path mismatch (meaning migration or wrong location)
-                if (game.images.cover.startsWith('http')) {
-                    console.log(`🔄 New URL detected for ${game.id}...`);
-                    const newPath = await downloadAndOptimize(game.images.cover, expectedFilename, letter, true);
+                // Logic: Check for HTTP URL or path mismatch
+                if (currentUrl.startsWith('http')) {
+                    console.log(`🔄 New URL detected for ${game.id} (${type})...`);
+                    const newPath = await downloadAndOptimize(currentUrl, expectedFilename, letter, true);
                     if (newPath) {
-                        game.images.cover = newPath;
+                        // @ts-ignore
+                        game.images[type] = newPath;
                         fileChanged = true;
                     }
-                } else if (game.images.cover !== expectedPath) {
-                    console.log(`📦 Format mismatch for ${game.id}. Fixing...`);
-                    const newPath = await downloadAndOptimize(game.images.cover, expectedFilename, letter, true);
+                } else if (!currentUrl.startsWith('/images/optimized') || currentUrl !== expectedPath) {
+                   // Optional: Fix mismatch if it points to an unoptimized local file or old path
+                   // For now, let's just focus on if it's NOT the expected path and looks like a raw file
+                   if (currentUrl.startsWith('/images/optimized')) {
+                        // If it's already optimized but maybe with a different name or path?
+                        // If it matches exactly expectedPath, we are good. 
+                        // If not, we might want to check existence.
+                        // For simplicity, let's keep the user's focus which is "downloading" new http images.
+                        continue; 
+                   }
+
+                   // If it's a local path that isn't the target path, try to optimize it
+                    console.log(`📦 Format mismatch for ${game.id} (${type}). Fixing...`);
+                    const newPath = await downloadAndOptimize(currentUrl, expectedFilename, letter, true);
                     if (newPath) {
-                        game.images.cover = newPath;
+                        // @ts-ignore
+                        game.images[type] = newPath;
                         fileChanged = true;
                     }
                 }

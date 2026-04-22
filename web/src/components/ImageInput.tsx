@@ -10,7 +10,7 @@ interface ImageInputProps {
     onChange: (url: string) => void;
 }
 
-const API_URL = 'http://localhost:4000/api';
+const API_URL = 'http://localhost:3000/api';
 
 export const ImageInput = ({ label, value, gameId, type, onChange }: ImageInputProps) => {
     const [uploading, setUploading] = useState(false);
@@ -48,7 +48,7 @@ export const ImageInput = ({ label, value, gameId, type, onChange }: ImageInputP
     const getPreviewUrl = (url: string) => {
         if (!url) return '';
         if (url.startsWith('http')) return url;
-        return `http://localhost:4000${url}`;
+        return `http://localhost:3000${url}`;
     };
 
     return (
@@ -67,7 +67,7 @@ export const ImageInput = ({ label, value, gameId, type, onChange }: ImageInputP
                                 src={getPreviewUrl(value)}
                                 alt="Preview"
                                 className="w-full h-full object-cover"
-                                onError={(e) => (e.target as HTMLImageElement).src = 'https://via.placeholder.com/64?text=?'}
+                                onError={(e) => (e.target as HTMLImageElement).src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2264%22 height%3D%2264%22 viewBox%3D%220 0 64 64%22%3E%3Crect fill%3D%22%23e2e8f0%22 width%3D%2264%22 height%3D%2264%22%2F%3E%3Ctext fill%3D%22%2364748b%22 font-family%3D%22sans-serif%22 font-size%3D%2232%22 dy%3D%2210.5%22 font-weight%3D%22bold%22 x%3D%2250%25%22 y%3D%2250%25%22 text-anchor%3D%22middle%22%3E%3F%3C%2Ftext%3E%3C%2Fsvg%3E'}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-slate-700">
