@@ -1,0 +1,26 @@
+[
+  {
+    "id": "minecraft",
+    "name": "Minecraft",
+    "console": "pc-windows",
+    "releaseDate": "",
+    "platforms": [
+      {
+        "console": "pc-windows",
+        "date": ""
+      }
+    ],
+    "tags": [],
+    "description": "",
+    "images": {
+      "cover": "/images/optimized/m/minecraft-cover.webp",
+      "background": "",
+      "square": "/images/optimized/m/minecraft-square.webp",
+      "vertical": "",
+      "horizontal": "",
+      "logo": "",
+      "icon": "",
+      "screenshots": []
+    }
+  }
+]
