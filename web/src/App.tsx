@@ -135,9 +135,10 @@ function App() {
       });
       setIsModalOpen(false);
       fetchGames();
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error saving game", e);
-      alert('Error saving game (Backend offline).');
+      const msg = e.response?.data?.error || e.message || 'Unknown error';
+      alert(`Error saving game: ${msg}`);
     }
   };
 

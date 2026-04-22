@@ -125,12 +125,14 @@ export const searchGames = (req: Request, res: Response) => {
             return;
         }
 
-        const searchTerm = query.toLowerCase();
+        const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const searchTerm = normalize(query);
 
         const games = loadAllGames();
 
         const results = games.filter(game =>
-            game.name.toLowerCase().includes(searchTerm)
+            normalize(game.name).includes(searchTerm) || 
+            normalize(game.id).includes(searchTerm)
         ).map(game => ({
             id: game.id,
             name: game.name,
