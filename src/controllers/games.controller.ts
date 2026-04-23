@@ -174,6 +174,24 @@ export const getGameById = (req: Request, res: Response) => {
     }
 };
 
+export const getYears = (req: Request, res: Response) => {
+    try {
+        const games = loadAllGames();
+        const years = new Set<string>();
+        for (const game of games) {
+            if (game.releaseDate) {
+                const year = new Date(game.releaseDate).getFullYear();
+                if (!isNaN(year)) years.add(year.toString());
+            }
+        }
+        const sortedYears = Array.from(years).sort((a, b) => b.localeCompare(a));
+        res.json(sortedYears);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 export const deleteGame = (req: Request, res: Response) => {
     try {
         const { id } = req.params;
