@@ -20,13 +20,12 @@ export interface Game {
     description?: string;
     externalIds?: ExternalIds;
     images?: {
-        cover: string;
-        background: string;
-        square: string;
-        vertical: string;
-        horizontal: string;
+        home: string;
+        v_grid: string;
+        h_grid: string;
         logo: string;
         icon: string;
         screenshots: string[];
+        videos: string[];
     };
 }

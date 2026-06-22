@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "tsc && xcopy /E /I /Y src\\data dist\\data >nul 2>&1",
     "start": "node dist/index.js",
     "optimize-images": "ts-node scripts/optimize-images.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +15,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.1",
     "@types/multer": "^2.0.0",
     "axios": "^1.13.2",
     "cors": "^2.8.5",
