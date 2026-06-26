@@ -263,7 +263,7 @@ function App() {
     const vGridList = grids.filter(g => g.width === 600 && g.height === 900).slice(0, 10)
     if (vGridList.length === 0) vGridList.push(...grids.slice(0, 10))
 
-    const hGridList = grids.filter(g => (g.width === 920 && g.height === 430) || (g.width === 460 && g.height === 215)).slice(0, 10)
+    const hGridList = [...grids.filter(g => (g.width === 920 && g.height === 430) || (g.width === 460 && g.height === 215)), ...heroes].slice(0, 10)
     if (hGridList.length === 0) hGridList.push(...grids.slice(0, 10))
 
     const homeList = grids.filter(g => g.width === g.height).slice(0, 10)
