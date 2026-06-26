@@ -43,33 +43,6 @@ export const searchGames = async (req: Request, res: Response) => {
   try {
     const query = (req.query.q as string || '').trim();
 
-    if (isSupabaseConfigured()) {
-      const sb = getSupabase()!;
-      let sbQuery = sb.from('games').select('*').order('name');
-
-      if (query) {
-        sbQuery = sbQuery.ilike('name', `%${query.replace(/%/g, '\\%')}%`);
-      }
-
-      const { data, error } = await sbQuery.limit(50);
-
-      if (!error && data) {
-        const results = data.map(flattenGame).map(g => ({
-          id: g.id,
-          name: g.name,
-          console: g.console,
-          releaseDate: g.releaseDate,
-          platforms: g.platforms,
-          images: g.images
-        }));
-        res.json({ results });
-        return;
-      }
-      console.error('[Supabase] searchGames error:', error);
-      // fall through to local
-    }
-
-    // Local fallback
     const games = loadAllGames();
     if (!query) {
       res.json({ results: games.slice(0, 50).map(g => ({ id: g.id, name: g.name, console: g.console, releaseDate: g.releaseDate, platforms: g.platforms, images: g.images })) });
@@ -91,17 +64,6 @@ export const getGameById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) { res.status(400).json({ error: 'ID required' }); return; }
-
-    if (isSupabaseConfigured()) {
-      const sb = getSupabase()!;
-      const { data, error } = await sb.from('games').select('*').eq('id', id).maybeSingle();
-
-      if (!error && data) {
-        res.json(flattenGame(data));
-        return;
-      }
-      // fall through
-    }
 
     const firstChar = id.charAt(0).toLowerCase();
     const games = loadGamesByLetter(firstChar);
@@ -178,24 +140,6 @@ export const saveGame = async (req: Request, res: Response) => {
 
 export const getYears = async (req: Request, res: Response) => {
   try {
-    if (isSupabaseConfigured()) {
-      const sb = getSupabase()!;
-      const { data, error } = await sb.from('games').select('data->>releaseDate');
-
-      if (!error && data) {
-        const years = new Set<string>();
-        for (const row of data) {
-          const date = (row as any).releaseDate;
-          if (date) {
-            const year = new Date(date).getFullYear();
-            if (!isNaN(year)) years.add(year.toString());
-          }
-        }
-        res.json(Array.from(years).sort((a, b) => b.localeCompare(a)));
-        return;
-      }
-    }
-
     const games = loadAllGames();
     const years = new Set<string>();
     for (const game of games) {

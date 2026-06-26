@@ -13,40 +13,6 @@ export const getConsoles = async (req: Request, res: Response) => {
   try {
     const hasGamesQuery = req.query.hasGames === 'true';
 
-    if (isSupabaseConfigured()) {
-      const sb = getSupabase()!;
-      const { data, error } = await sb.from('consoles').select('*').order('name');
-
-      if (!error && data) {
-        let consoles = data.map(flattenConsole);
-
-        if (hasGamesQuery) {
-          const { data: gamesData } = await sb.from('games').select('data->>console, data->>platforms');
-
-          const usedConsoleIds = new Set<string>();
-          if (gamesData) {
-            for (const g of gamesData) {
-              const gAny = g as any;
-              const primary = typeof gAny.console === 'string' ? gAny.console : null;
-              if (primary) usedConsoleIds.add(primary.toLowerCase());
-              if (Array.isArray(gAny.platforms)) {
-                for (const p of gAny.platforms) {
-                  const pId = typeof p.console === 'string' ? p.console : p.console?.id;
-                  if (pId) usedConsoleIds.add(pId.toLowerCase());
-                }
-              }
-            }
-          }
-          consoles = consoles.filter((c: any) => usedConsoleIds.has(c.id.toLowerCase()));
-        }
-
-        consoles.sort((a: any, b: any) => a.name.localeCompare(b.name));
-        res.json(consoles);
-        return;
-      }
-      console.error('[Supabase] getConsoles error:', error);
-    }
-
     // Local fallback
     if (!fs.existsSync(CONSOLES_PATH)) {
       res.json([]);
