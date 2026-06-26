@@ -19,6 +19,8 @@ export interface Game {
     tags: string[];
     description?: string;
     externalIds?: ExternalIds;
+    savesPath?: string;
+    savesExtension?: string;
     images?: {
         home: string;
         v_grid: string;

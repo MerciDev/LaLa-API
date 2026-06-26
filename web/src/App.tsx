@@ -13,6 +13,8 @@ interface Game {
   releaseDate?: string
   tags: string[]
   description?: string
+  savesPath?: string
+  savesExtension?: string
   images?: {
     home: string
     v_grid: string
@@ -38,8 +40,8 @@ function flattenGame(row: any): Game {
 }
 
 function trimGame(g: Game) {
-  const { id, name, console, releaseDate, tags, description, images, externalIds } = g
-  return { id, name, data: { console, releaseDate, tags, description, images, externalIds } }
+  const { id, name, console, releaseDate, tags, description, savesPath, savesExtension, images, externalIds } = g
+  return { id, name, data: { console, releaseDate, tags, description, savesPath, savesExtension, images, externalIds } }
 }
 
 // --- Icons ---
@@ -150,6 +152,7 @@ function App() {
     setSelectedGame({
       id: '', name: '', console: '', releaseDate: '',
       tags: [], description: '',
+      savesPath: '{game_root}', savesExtension: '.sav',
       images: { home: '', v_grid: '', h_grid: '', logo: '', icon: '', screenshots: [], videos: [] }
     })
     setSgdbOptions({})
@@ -718,6 +721,31 @@ function App() {
                           } : prev)
                         }}
                       />
+                    </div>
+
+                    <div className="col-span-1 md:col-span-2 space-y-4 pt-4 border-t border-white/5">
+                      <h4 className="text-sm font-bold text-indigo-400 uppercase tracking-wider">Guardados</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Ruta de Guardados</label>
+                          <div className="relative">
+                            <Monitor className="absolute left-3 top-3 text-slate-500" size={16} />
+                            <input className="w-full bg-slate-800/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:bg-slate-800 outline-none transition-all"
+                              placeholder='Ej. {game_root}\saves' value={selectedGame.savesPath || ''}
+                              onChange={e => setSelectedGame({ ...selectedGame, savesPath: e.target.value })} />
+                          </div>
+                          <p className="text-[10px] text-slate-600 ml-1">Usa {'{game_root}'} como ruta base del juego</p>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Extensión de Guardado</label>
+                          <div className="relative">
+                            <Hash className="absolute left-3 top-3 text-slate-500" size={16} />
+                            <input className="w-full bg-slate-800/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:bg-slate-800 outline-none transition-all"
+                              placeholder=".sav, .srm..." value={selectedGame.savesExtension || ''}
+                              onChange={e => setSelectedGame({ ...selectedGame, savesExtension: e.target.value })} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="col-span-1 md:col-span-2 space-y-2">
