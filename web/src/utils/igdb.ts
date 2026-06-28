@@ -34,24 +34,43 @@ async function getAccessToken(): Promise<string> {
   return data.access_token
 }
 
+export interface IgdbGenre {
+  id: number
+  name: string
+}
+
 export async function searchIgdbGames(query: string): Promise<IgdbSearchResult[]> {
   if (!igdbConfigured()) return []
   const clientId = import.meta.env.VITE_IGDB_CLIENT_ID!
   const token = await getAccessToken()
+  const headers = {
+    'Client-ID': clientId,
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'text/plain',
+  }
 
   const escaped = query.replace(/'/g, "''").replace(/"/g, '')
-  const body = `fields name,slug,first_release_date,summary,cover.image_id,platforms.name,platforms.abbreviation,screenshots.image_id; where name ~ *"${escaped}"*; limit 8;`
+
+  // Identical query to the original (proven working), only limit increased
+  const body = `fields name,slug,first_release_date,summary,cover.image_id,platforms.name,platforms.abbreviation,screenshots.image_id; where name ~ *"${escaped}"*; limit 25;`
+
   const resp = await fetch('/api/igdb/games', {
-    method: 'POST',
-    headers: {
-      'Client-ID': clientId,
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'text/plain',
-    },
+    method: 'POST', headers,
     body,
   })
   if (!resp.ok) throw new Error(`IGDB search failed: ${resp.status}`)
-  return resp.json()
+  let results: IgdbSearchResult[] = await resp.json()
+
+  // If nothing found, try IGDB search endpoint as fallback
+  if (results.length === 0) {
+    const resp2 = await fetch('/api/igdb/games', {
+      method: 'POST', headers,
+      body: `search "${escaped}"; fields name,slug,summary,cover.image_id; limit 25;`,
+    })
+    if (resp2.ok) results = await resp2.json()
+  }
+
+  return results
 }
 
 export async function fetchIgdbGameById(igdbId: number): Promise<IgdbSearchResult | null> {

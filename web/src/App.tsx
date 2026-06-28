@@ -162,6 +162,12 @@ function App() {
   const handleSave = async () => {
     if (!selectedGame) return
     try {
+      const { data: { session }, error: sessionError } = await sb().auth.refreshSession()
+      if (sessionError || !session) {
+        alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.')
+        setUser(null)
+        return
+      }
       const record = trimGame(selectedGame)
       const { error: err } = await sb().from('games').upsert(record, { onConflict: 'id' })
       if (err) throw err
@@ -188,6 +194,12 @@ function App() {
     if (!selectedGame?.id) return
     if (!window.confirm('¿Estás seguro de eliminar este juego?')) return
     try {
+      const { data: { session }, error: sessionError } = await sb().auth.refreshSession()
+      if (sessionError || !session) {
+        alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.')
+        setUser(null)
+        return
+      }
       const { error: err } = await sb().from('games').delete().eq('id', selectedGame.id)
       if (err) throw err
       setIsModalOpen(false)
@@ -580,23 +592,41 @@ function App() {
       {igdbSearching && <Loader2 className="absolute right-3 top-3 animate-spin text-indigo-400" size={20} />}
     </div>
     {showIgdbResults && igdbResults.length > 0 && (
-      <div className="bg-slate-800 rounded-xl border border-slate-700 max-h-60 overflow-y-auto space-y-1 p-1">
+      <div className="bg-slate-800 rounded-xl border border-slate-700 max-h-96 overflow-y-auto space-y-1 p-1 custom-scrollbar">
+        <div className="flex items-center justify-between px-3 py-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider border-b border-slate-700/50 sticky top-0 bg-slate-800 z-10 rounded-t-xl">
+          <span>{igdbResults.length} resultados</span>
+          <span className="text-indigo-400/60">IGDB</span>
+        </div>
         {igdbResults.map((r: any) => (
           <button key={r.id}
             onMouseDown={() => applyIgdbResult(r)}
-            className="w-full flex items-center gap-3 p-3 hover:bg-indigo-500/10 rounded-lg transition-colors text-left cursor-pointer">
-            {r.cover?.image_id && (
+            className="w-full flex items-center gap-3 p-3 hover:bg-indigo-500/10 rounded-xl transition-colors text-left cursor-pointer border border-transparent hover:border-indigo-500/20 group">
+            {r.cover?.image_id ? (
               <img src={igdbImageUrl(r.cover.image_id, 'cover_small')} alt=""
-                className="w-10 h-14 object-cover rounded-lg bg-slate-700" />
+                className="w-12 h-16 object-cover rounded-lg bg-slate-700 shadow-lg shrink-0" />
+            ) : (
+              <div className="w-12 h-16 rounded-lg bg-slate-700/50 flex items-center justify-center shrink-0">
+                <Gamepad2 size={18} className="text-slate-500" />
+              </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{r.name}</p>
-              <p className="text-xs text-slate-400">
-                {r.first_release_date ? new Date(r.first_release_date * 1000).getFullYear() : ''}
-                {r.platforms?.length ? ` · ${r.platforms.map((p: any) => p.abbreviation || p.name).join(', ')}` : ''}
+              <p className="text-sm font-bold text-white truncate group-hover:text-indigo-300 transition-colors">{r.name}</p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                {r.first_release_date ? new Date(r.first_release_date * 1000).getFullYear() : '?'}
+                {r.platforms?.length ? ` · ${r.platforms.slice(0, 3).map((p: any) => p.abbreviation || p.name).join(', ')}${r.platforms.length > 3 ? '...' : ''}` : ''}
+              </p>
+              <p className="text-[10px] text-slate-500 mt-0.5 truncate">
+                {r.genres?.slice(0, 3).map((g: any) => g.name).join(', ') || ''}
               </p>
             </div>
-            <Plus size={16} className="text-indigo-400 shrink-0" />
+            <div className="flex flex-col items-end gap-1 shrink-0">
+              {(r.total_rating || r.rating) && (
+                <span className="text-[10px] font-bold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full">
+                  {Math.round(r.total_rating || r.rating || 0)}%
+                </span>
+              )}
+              <Plus size={16} className="text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
           </button>
         ))}
       </div>
