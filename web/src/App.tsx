@@ -4,6 +4,8 @@ import { searchIgdbGames, igdbImageUrl, fetchIgdbGameById } from './utils/igdb'
 import { searchSgdbGames, fetchSgdbGrids, fetchSgdbHeroes, fetchSgdbLogos, fetchSgdbIcons } from './utils/steamgriddb'
 import AssetManager from './components/AssetManager'
 import { getAssetUrl, getGameAssets, getSupabaseClient } from './utils/assets'
+import PlatformSettings from './components/Settings/PlatformSettings'
+import { fetchPlatforms } from './utils/platforms'
 
 // --- Tipos ---
 interface Game {
@@ -47,7 +49,7 @@ function trimGame(g: Game) {
 // --- Icons ---
 import {
   Search, Plus, X, Monitor, Calendar, Hash, Sparkles, Gamepad2,
-  Trophy, Edit3, Save, Copy, Trash2, RefreshCw, LogIn, LogOut, UserPlus, Mail, Lock, Loader2
+  Trophy, Edit3, Save, Copy, Trash2, RefreshCw, LogIn, LogOut, UserPlus, Mail, Lock, Loader2, Settings
 } from 'lucide-react'
 
 function App() {
@@ -66,6 +68,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [platforms, setPlatforms] = useState<Record<string, any>>({})
 
   // IGDB search
   const [igdbQuery, setIgdbQuery] = useState('')
@@ -82,6 +86,7 @@ function App() {
       if (data.session?.user) setUser(data.session.user)
       setSessionLoading(false)
     })
+    fetchPlatforms().then(setPlatforms).catch(console.error)
   }, [])
 
   // Fetch games
@@ -437,6 +442,9 @@ function App() {
 
             <div className="flex items-center gap-4">
               <span className="hidden sm:block text-xs text-slate-500">{user.email}</span>
+              <button onClick={() => setIsSettingsOpen(true)} className="p-2 text-slate-500 hover:text-indigo-400 hover:bg-indigo-400/10 rounded-xl transition-colors cursor-pointer" title="Ajustes">
+                <Settings size={20} />
+              </button>
               <button onClick={handleLogout} className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors cursor-pointer" title="Cerrar sesión">
                 <LogOut size={20} />
               </button>
@@ -649,9 +657,13 @@ function App() {
                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Plataforma</label>
                         <div className="relative">
                           <Gamepad2 className="absolute left-3 top-3 text-slate-500" size={16} />
-                          <input className="w-full bg-slate-800/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:bg-slate-800 outline-none transition-all"
-                            placeholder="Ej. Nintendo Switch, PC, PS5..."
-                            value={selectedGame.console || ''} onChange={e => setSelectedGame({ ...selectedGame, console: e.target.value })} />
+                          <select className="w-full bg-slate-800/50 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:border-indigo-500 focus:bg-slate-800 outline-none transition-all appearance-none cursor-pointer"
+                            value={selectedGame.console || ''} onChange={e => setSelectedGame({ ...selectedGame, console: e.target.value })}>
+                            <option value="">Seleccionar plataforma...</option>
+                            {Object.values(platforms).map(p => (
+                              <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                       <div className="w-full md:w-56 space-y-2">
@@ -819,6 +831,9 @@ function App() {
             </div>
             <img src={zoomedSgdbImage} alt="Zoomed" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onClick={e => e.stopPropagation()} />
           </div>
+        )}
+        {isSettingsOpen && (
+          <PlatformSettings onClose={() => setIsSettingsOpen(false)} />
         )}
       </div>
     </div>
